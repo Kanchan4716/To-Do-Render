@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #todo-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #todos {
+      margin-top: 20px;
+    }
+
+    .todo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9f9f9;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    .todo-item h1 {
+      margin: 0;
+      font-size: 18px;
+      color: #555;
+      flex: 1;
+    }
+
+    .todo-item h1.completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .todo-item button {
+      background-color: #dc3545;
+      padding: 8px 12px;
+    }
+
+    .todo-item button:hover {
+      background-color: #c82333;
+    }
+
+    .todo-item input[type="checkbox"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="todo-container">
+    <h1>Todo List</h1>
+    
+    <div class="input-container">
+      <input type="text" placeholder="Add a new todo" />
+      <button onclick="addTodo()">Add</button>
+    </div>
+    
+    <div class="actions">
+      <button onclick="deleteFirstTodo()" style="flex: 1;">Delete First</button>
+      <button onclick="deleteLastTodo()" style="flex: 1;">Delete Last</button>
+    </div>
+    
+    <div id="todos"></div>
+  </div>
+  
+  <script>
+    let todos = [];
+    
+    function addTodo() {
+      const input = document.querySelector("input");
+      const title = input.value.trim();
+      if (title) {
+        todos.push({ title, completed: false });
+        input.value = ""; // Clear the input after adding
+        render();
+      }
+    }
+
+    function deleteLastTodo() {
+      todos.splice(todos.length - 1, 1);
+      render();
+    }
+
+    function deleteFirstTodo() {
+      todos.splice(0, 1);
+      render();
+    }
+
+    function deleteTodo(index) {
+      todos.splice(index, 1);
+      render();
+    }
+
+    function toggleComplete(index) {
+      todos[index].completed = !todos[index].completed;
+      render();
+    }
+
+    function createTodoComponent(todo, index) {
+      const div = document.createElement("div");
+      div.classList.add("todo-item");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = todo.completed;
+      checkbox.onclick = () => toggleComplete(index);
+
+      const h1 = document.createElement("h1");
+      h1.innerHTML = todo.title;
+      if (todo.completed) {
+        h1.classList.add("completed");
+      }
+
+      const button = document.createElement("button");
+      button.innerHTML = "Delete";
+      button.onclick = () => deleteTodo(index);
+
+      div.appendChild(checkbox);
+      div.appendChild(h1);
+      div.appendChild(button);
+
+      return div;
+    }
+
+    function render() {
+      const todosContainer = document.querySelector("#todos");
+      todosContainer.innerHTML = "";
+      
+      todos.forEach((todo, index) => {
+        const element = createTodoComponent(todo, index);
+        todosContainer.appendChild(element);
+      });
+    }
+  </script>
+</body>
+</html>
